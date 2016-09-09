@@ -6,6 +6,8 @@
 package pkg3dprintme;
 
 import java.net.URL;
+import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,35 +24,36 @@ import javafx.scene.control.Label;
 public class FXMLDocumentController implements Initializable {
     
     /* -----------------------------
-     * FXML object injection points.
+     * FXML member injection points.
      * -----------------------------
      */
     
     @FXML
-    private Label label;
+    private Label resultsLabel;    
+    
+    /* -----------------------------
+     * Non-injected class members.
+     * -----------------------------
+     */
+    private NetworkController networkController;
     
     /* -----------------------------
      * FXML method injection points.
      * -----------------------------
-     */    
+     */
     
     /**
      *
      * @param event 
      */
     @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
+    private void captureButtonAction(ActionEvent event) {
+        ZonedDateTime zdt;
+        zdt = ZonedDateTime.now();
+        boolean success = networkController.capture("Kieran", zdt, "C:\\");
+        resultsLabel.setText(success ? "Success!" : "Failure!");
     }
-    
-    /* -----------------------------
-     * Non-injected class variables.
-     * -----------------------------
-     */
-    
-    
-    
+
     /* ---------------------------
      * Non-injected class methods.
      * ---------------------------
@@ -63,7 +66,31 @@ public class FXMLDocumentController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        networkController = new NetworkController();
     }    
+
+    private static class NetworkController {
+
+        HashMap<String, Integer> hostTable;
+        
+        public NetworkController() {
+        }
+        
+        public boolean capture(String name, ZonedDateTime date, String path) {
+            hostTable = statusQuery();
+            return (checkMap(hostTable));
+        }
+        
+        private HashMap<String, Integer> statusQuery() {
+            HashMap<String, Integer> hosts;
+            hosts = new HashMap<>();
+            return hosts;
+        }
+        
+        private boolean checkMap(HashMap<String, Integer> hostTable) {
+            return false;
+        }
+
+    }
     
 }
