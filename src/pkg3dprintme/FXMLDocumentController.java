@@ -8,6 +8,7 @@ package pkg3dprintme;
 import java.net.URL;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -88,6 +89,10 @@ public class FXMLDocumentController implements Initializable {
         }
         
         private boolean checkMap(HashMap<String, Integer> hostTable) {
+            return hostTable.entrySet().stream().noneMatch((entry) -> (!checkEntry(entry)));
+        }
+
+        private boolean checkEntry(Map.Entry<String, Integer> entry) {
             return false;
         }
 
