@@ -25,8 +25,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.text.Text;
 
 /**
  * The FXMLDocumentController class contains all of the front-end logic of the
@@ -45,6 +48,20 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label resultsLabel;    
     
+    @FXML
+   
+    private  TextField nameTextfield;
+    
+    @FXML
+    
+   private TextField mobileTextField;
+    
+    @FXML
+    private DatePicker dateDatePicker;
+    
+    @FXML
+    private Text outputText;
+    
     /* -----------------------------
      * Non-injected class members.
      * -----------------------------
@@ -55,23 +72,16 @@ public class FXMLDocumentController implements Initializable {
      * FXML method injection points.
      * -----------------------------
      */
-    
-    /**
-     * The captureButtonAction is an injected method that will be called
-     * whenever the capture button on the interface is pressed.
-     * @param event the internal event which triggers this handler.
-     */
     @FXML
-    private void captureButtonAction(ActionEvent event) {
-        ZonedDateTime zdt;
-        zdt = ZonedDateTime.now();
-        try {
-            networkController.capture("Kieran", zdt, "C:\\");
-            resultsLabel.setText("Success!");
-        } catch (Exception e) {
-            // TODO: Display detailed error messages
-            resultsLabel.setText("Failure!");
-        }
+    private void openDirectoryButtonAction(ActionEvent event){
+        String message;
+        
+        
+       message = outputText.textProperty().getValue();
+       
+       message += "Hello\n";
+       
+        outputText.textProperty().set(message);
         
     }
     
@@ -80,6 +90,7 @@ public class FXMLDocumentController implements Initializable {
      */
     @FXML
     private void exitButtonAction(ActionEvent event) {
+     
         Platform.exit();
         System.exit(0);
     }
