@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016 Kieran
- *
+ * Copyright (C) 2016
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -42,14 +42,13 @@ public class FXMLDocumentController implements Initializable {
      * -----------------------------
      */
     
-    @FXML
-    private Label resultsLabel;    
-    
     /* -----------------------------
      * Non-injected class members.
      * -----------------------------
      */
+    
     private NetworkController networkController;
+    private ZonedDateTime zdt;
     
     /* -----------------------------
      * FXML method injection points.
@@ -57,31 +56,33 @@ public class FXMLDocumentController implements Initializable {
      */
     
     /**
-     * The captureButtonAction is an injected method that will be called
+     * The captureButtonAction is an injected method which will be called
      * whenever the capture button on the interface is pressed.
+     * 
+     * @author Kieran Hannigan
      * @param event the internal event which triggers this handler.
      */
     @FXML
     private void captureButtonAction(ActionEvent event) {
-        ZonedDateTime zdt;
         zdt = ZonedDateTime.now();
         try {
-            networkController.capture("Kieran", zdt, "C:\\");
-            resultsLabel.setText("Success!");
+            // TODO: Make call to NetworkController capture function.
         } catch (Exception e) {
             // TODO: Display detailed error messages
-            resultsLabel.setText("Failure!");
-        }
-        
+        } 
     }
     
     /**
-     * Comments here
+     * The exitMenuItemAction is an injected method which will be called
+     * whenever the exit menu item on the interface is pressed. This function
+     * calls the JavaFX platform's exit function.
+     * 
+     * @author Kieran Hannigan
+     * @param event the internal event which triggers this handler.
      */
     @FXML
-    private void exitButtonAction(ActionEvent event) {
+    private void exitMenuItemAction(ActionEvent event) {
         Platform.exit();
-        System.exit(0);
     }
 
     /* ---------------------------
@@ -90,37 +91,59 @@ public class FXMLDocumentController implements Initializable {
      */
     
     /**
-     * The initialize function performs all of the required instantiation.
-     * @param url
+     * The constructor performs all instantiation for the class object that
+     * does not require access to the FXML injected members.
+     * 
+     * @author Kieran Hannigan
+     */
+    public FXMLDocumentController() {
+        networkController = new NetworkController();
+    }
+    
+    /**
+     * The purpose for the initialize function (by comparison to the 
+     * constructor) is to perform all instantiation that requires access to
+     * FXML injected members - these members are only injected after the
+     * constructor is called. At present there is no instantiation that
+     * requires FXML injected members but the function is still required
+     * because it will be called by the platform.
+     * 
+     * @author Kieran Hannigan
+     * @param url 
      * @param rb 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        networkController = new NetworkController();
     }    
 
     /** 
      * The NetworkController class contains all of the back-end logic of the
      * application. An instance of this class is created by the application
      * controller, and that controller will call public methods in this class
-     * as part of handling interface events.
+     * to interface with external resources such as the ImageServers and the
+     * client disk.
      */
     private static class NetworkController {
 
         /**
-         * The constructor for this class, which performs all of the required
-         * instantiation.
+         * The constructor for this class performs all of the required
+         * instantiation. Currently no instantiation is performed, but the
+         * function is still required as it will be called when objects are
+         * instantiated from this class.
+         * 
+         * @author Kieran Hannigan
          */
         public NetworkController() {
         }
         
         /**
          * The capture function captures images from all of the ImageServers
-         * that are available, and them stores them to the file system. 
-         * The parameters to this function are provided by the
-         * interface controller which retrieves them from the layout and
+         * that are available, and then stores them to the file system. 
+         * The parameters to this function are provided by the 
+         * interface controller, which retrieves them from the layout, and
          * performs sanitization before sending them here.
          * 
+         * @author Kieran Hannigan
          * @param name the name of the client/job.
          * @param date the datetime of the job.
          * @param path the path to save the job.
@@ -143,6 +166,7 @@ public class FXMLDocumentController implements Initializable {
          * ImageServers. This function is called by the capture function,
          * but can also be called by the interface controller for previewing.
          * 
+         * @author Kieran Hannigan
          * @return an ArrayList of images.
          */
         public ArrayList<Image> getImages() throws Exception {
@@ -165,9 +189,11 @@ public class FXMLDocumentController implements Initializable {
         }
         
         /**
-         * This function queries all available ImageServers using the UDP
-         * protocol broadcast address.
+         * This function queries all available ImageServers for their IP
+         * addresses using a UDP protocol broadcast, then builds a host
+         * table from the results.
          * 
+         * @author Kieran Hannigan
          * @return a map from String to String of all the hosts that were 
          *         detected, where the key is the name of the host and the 
          *         value is that host's IP address.
@@ -191,11 +217,14 @@ public class FXMLDocumentController implements Initializable {
          * this by iterating through the table and checking each entry
          * individually.
          * 
+         * @author Kieran Hannigan
          * @param hostTable the host table to be checked.
          * @return a boolean representing success (true) or failure (false).
          */
         private boolean checkMap(HashMap<String, String> hostTable) {
-            return (!hostTable.isEmpty() && hostTable.entrySet().stream().noneMatch((entry) -> (!checkEntry(entry))));
+            return (!hostTable.isEmpty() && 
+                    hostTable.entrySet().stream().noneMatch((entry) 
+                            -> (!checkEntry(entry))));
         }
 
         /**
@@ -203,6 +232,7 @@ public class FXMLDocumentController implements Initializable {
          * such things as invalid host names, invalid IP addresses, clashes,
          * and mismatches.
          * 
+         * @author Kieran Hannigan
          * @param entry the host entry to be checked.
          * @return a boolean representing success (true) or failure (false).
          */
@@ -212,10 +242,12 @@ public class FXMLDocumentController implements Initializable {
         }
 
         /**
-         * The shoot function coordinates requests to the ImageServers. It
-         * first builds a table of delay adjustments, then issues a command
+         * The shoot function coordinates requests to the ImageServers by 
+         * first calling the sync function to build a table of delay 
+         * adjustments, and then calling the snap function to issue a command 
          * for the ImageServers to capture.
          * 
+         * @author Kieran Hannigan
          * @param hostTable the table of ImageServers
          * @return the images captured.
          */
@@ -239,6 +271,7 @@ public class FXMLDocumentController implements Initializable {
         /**
          * The storeImages function saves images to the local file system.
          * 
+         * @author Kieran Hannigan
          * @param imageSet the images to be saved.
          * @param savePath the path where the images should be saved.
          */
@@ -253,8 +286,9 @@ public class FXMLDocumentController implements Initializable {
 
         /**
          * The sync function builds up a table of delays based on the time
-         * that it takes to reach a group of hosts.
+         * that it takes to reach each of a group of hosts.
          * 
+         * @author Kiearn Hannigan
          * @param hostTable the hosts to be reached.
          * @return 
          */
@@ -276,6 +310,7 @@ public class FXMLDocumentController implements Initializable {
          * The snap function commands a group of ImageServers to capture and
          * return their payload at a given unified time.
          * 
+         * @author Kieran Hannigan
          * @param syncTable the table of hosts and their addresses.
          * @param syncTable the table of host delays.
          * @return 
