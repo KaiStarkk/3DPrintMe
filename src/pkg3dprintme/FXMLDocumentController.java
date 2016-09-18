@@ -70,8 +70,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Text LogText;
     
- 
-    
+    private int Serial_number =0 ;
     /* -----------------------------
      * Non-injected class members.
      * -----------------------------
@@ -83,23 +82,27 @@ public class FXMLDocumentController implements Initializable {
      * -----------------------------
      */
     @FXML
+   
     private void openDirectoryButtonAction(ActionEvent event) throws IOException{
-        
-        String message ;
+       Serial_number += 1 ;
+        String message;
         String X ;
         String Y ;
         LocalDate A;
         Date B;
         Calendar cal = Calendar.getInstance();
+        
         message = LogText.textProperty().get();
         X = nameTextField.getText();
         A = dateDatePicker.getValue();
         Y = mobileTextField.getText();
         B = cal.getTime();
-       message += "Date And Time Is:  " + B + "\n" + "Name: "  + X + '\n' + "Mobile Number:  " + Y + '\n' + "Birth Day: " + A + '\n'+"\n";
-      LogText.textProperty().setValue(message);
-       FileWriter fw = new FileWriter("C:\\demo1.txt",false); 
-         fw.write(message + "\r"); 
+        
+       message += Serial_number + "----\n " + "Date And Time Is:  " + B + "\n" + "Name: "  + X + '\n' + "Mobile Number:  " + Y + '\n' + "Birth Day: " + A + '\n'+"\n";
+       LogText.textProperty().setValue(message);
+     
+       FileWriter fw = new FileWriter("C:\\Log.txt",false); 
+         fw.write("\r\n" + message + "\r\n" ); 
          fw.close();
     }
     /**
@@ -127,7 +130,6 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         networkController = new NetworkController();
     }    
-
     /** 
      * The NetworkController class contains all of the back-end logic of the
      * application. An instance of this class is created by the application
@@ -323,7 +325,4 @@ public class FXMLDocumentController implements Initializable {
             
             return receivedImages;
         }
-
-    }
-    
-}
+    }}
