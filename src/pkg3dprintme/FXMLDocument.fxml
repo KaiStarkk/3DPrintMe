@@ -111,7 +111,7 @@
                                                       <Insets left="68.0" top="5.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <TextField fx:id="movileTextField">
+                                                <TextField fx:id="mobileTextField">
                                                    <HBox.margin>
                                                       <Insets left="14.0" />
                                                    </HBox.margin>
@@ -178,7 +178,7 @@
                                             <content>
                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="220.0" prefWidth="174.0">
                                                    <children>
-                                                      <Text fx:id="outputText" layoutX="14.0" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="154.240234375" />
+                                                      <Text fx:id="LogText" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="114.240234375" />
                                                    </children>
                                                 </AnchorPane>
                                             </content>

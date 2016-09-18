@@ -17,8 +17,10 @@
 package pkg3dprintme;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -29,6 +31,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import static javafx.scene.input.KeyCode.Y;
 import javafx.scene.text.Text;
 
 /**
@@ -50,7 +53,7 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
    
-    private  TextField nameTextfield;
+    private  TextField nameTextField;
     
     @FXML
     
@@ -60,7 +63,9 @@ public class FXMLDocumentController implements Initializable {
     private DatePicker dateDatePicker;
     
     @FXML
-    private Text outputText;
+    private Text LogText;
+    
+ 
     
     /* -----------------------------
      * Non-injected class members.
@@ -74,15 +79,19 @@ public class FXMLDocumentController implements Initializable {
      */
     @FXML
     private void openDirectoryButtonAction(ActionEvent event){
-        String message;
         
-        
-       message = outputText.textProperty().getValue();
+        String message ; 
+   
+        String X ;
+        String Y ;
+        LocalDate A;
+        message = LogText.textProperty().get();
+        X = nameTextField.getText();
+        A = dateDatePicker.getValue();
+        Y = mobileTextField.getText();
+       message += X + '\n' + Y + '\n' + A + '\n' ;
        
-       message += "Hello\n";
-       
-        outputText.textProperty().set(message);
-        
+      LogText.textProperty().setValue(message);
     }
     
     /**
