@@ -74,12 +74,12 @@
                                              <children>
                                                 <Label text="Name:">
                                                    <HBox.margin>
-                                                      <Insets left="77.0" top="5.0" />
+                                                      <Insets left="70.0" top="5.0" />
                                                    </HBox.margin>
                                                 </Label>
                                                 <TextField fx:id="nameTextField">
                                                    <HBox.margin>
-                                                      <Insets left="10.0" />
+                                                      <Insets left="17.0" />
                                                    </HBox.margin>
                                                 </TextField>
                                              </children>
@@ -89,14 +89,14 @@
                                           </HBox>
                                           <HBox prefHeight="0.0" prefWidth="384.0">
                                              <children>
-                                                <Label text="Date:">
+                                                <Label prefHeight="17.0" prefWidth="91.0" text="Date of Birth:">
                                                    <HBox.margin>
-                                                      <Insets left="80.0" top="5.0" />
+                                                      <Insets left="35.0" top="5.0" />
                                                    </HBox.margin>
                                                 </Label>
                                                 <DatePicker fx:id="dateDatePicker">
                                                    <HBox.margin>
-                                                      <Insets left="14.0" />
+                                                      <Insets />
                                                    </HBox.margin>
                                                 </DatePicker>
                                              </children>
@@ -176,7 +176,7 @@
                                        <children>
                                           <ScrollPane prefHeight="179.0" prefWidth="193.0">
                                             <content>
-                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="220.0" prefWidth="174.0">
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="174.0">
                                                    <children>
                                                       <Text fx:id="LogText" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="114.240234375" />
                                                    </children>

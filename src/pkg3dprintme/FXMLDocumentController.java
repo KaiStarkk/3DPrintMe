@@ -33,6 +33,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import static javafx.scene.input.KeyCode.Y;
 import javafx.scene.text.Text;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.io.FileWriter;  
+import java.io.IOException;
+import static java.lang.Character.LINE_SEPARATOR;
 
 /**
  * The FXMLDocumentController class contains all of the front-end logic of the
@@ -78,23 +83,27 @@ public class FXMLDocumentController implements Initializable {
      * -----------------------------
      */
     @FXML
-    private void openDirectoryButtonAction(ActionEvent event){
+    private void openDirectoryButtonAction(ActionEvent event) throws IOException{
         
-        String message ; 
-   
+        String message ;
         String X ;
         String Y ;
         LocalDate A;
+        Date B;
+        Calendar cal = Calendar.getInstance();
         message = LogText.textProperty().get();
         X = nameTextField.getText();
         A = dateDatePicker.getValue();
         Y = mobileTextField.getText();
-       message += X + '\n' + Y + '\n' + A + '\n' ;
-       
+        B = cal.getTime();
+       message += "Date And Time Is:  " + B + "\n" + "Name: "  + X + '\n' + "Mobile Number:  " + Y + '\n' + "Birth Day: " + A + '\n'+"\n";
       LogText.textProperty().setValue(message);
+       FileWriter fw = new FileWriter("C:\\demo1.txt",false); 
+         fw.write(message + "\r"); 
+         fw.close();
     }
-    
     /**
+     * 
      * Comments here
      */
     @FXML
