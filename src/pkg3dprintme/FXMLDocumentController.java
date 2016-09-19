@@ -16,7 +16,6 @@
  */
 package pkg3dprintme;
 
-import java.io.FileWriter;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,8 +29,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import java.io.IOException;
-import static java.util.Collections.list;
-import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
