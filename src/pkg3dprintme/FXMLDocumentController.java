@@ -29,11 +29,18 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import java.io.IOException;
+import java.util.Map;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 /**
  * The FXMLDocumentController class contains all of the front-end logic of the
@@ -68,6 +75,15 @@ public class FXMLDocumentController implements Initializable {
     private TableView hostTableView;
     
     @FXML
+    private TableColumn hostColumn;
+    
+    @FXML
+    private TableColumn addressColumn;
+    
+    @FXML
+    private TableColumn statusColumn;
+    
+    @FXML
     private ImageView topLeftImageView;
     
     @FXML
@@ -87,6 +103,12 @@ public class FXMLDocumentController implements Initializable {
     private static final String SEP = "--------\n";
     private static final ObservableList<String> LOG
             = FXCollections.observableArrayList();
+    private static final ObservableList<Map> HOSTS
+            = FXCollections.observableArrayList();
+    
+    public static final String hostColumnMapKey = "Host";
+    public static final String addressColumnMapKey = "Address";
+    public static final String statusColumnMapKey = "Status";
     
     private static final NetworkController networkController 
             = new NetworkController();
@@ -146,6 +168,25 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void refreshTableButtonAction(ActionEvent event) {
         // TODO: update the table with hosts from the network controller
+        try {
+            HashMap<String, String> hostMap = networkController.statusQuery();
+            
+            hostMap.entrySet().stream().map((host) -> {
+                HashMap<String, String> row = new HashMap<>();
+                row.put("Host", host.getKey());
+                row.put("Address", host.getValue());
+                return row;
+            }).map((row) -> {
+                row.put("Status", "Connected");
+                return row;
+            }).forEach((row) -> {
+                HOSTS.add(row);
+            });
+            
+        } catch (Exception e) {
+            // TODO: error handling            
+        }
+        
     }
     
     /**
@@ -214,6 +255,39 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         dateDatePicker.setValue(LocalDate.now());
         logListView.setItems(LOG);
+        
+        hostColumn.setCellValueFactory(new MapValueFactory(hostColumnMapKey));
+        addressColumn.setCellValueFactory(new MapValueFactory(addressColumnMapKey));
+        statusColumn.setCellValueFactory(new MapValueFactory(statusColumnMapKey));
+        
+        hostTableView.setItems(HOSTS);
+        hostTableView.getColumns().setAll(hostColumn, addressColumn, statusColumn);
+        
+        /*
+        * Example code taken from Example 12-12 available at
+        * http://docs.oracle.com/javafx/2/ui_controls/table-view.htm
+        */
+        Callback<TableColumn<Map, String>, TableCell<Map, String>> cellFactoryForMap = new Callback<TableColumn<Map, String>, TableCell<Map, String>>() {
+            @Override
+            public TableCell call(TableColumn p) {
+                return new TextFieldTableCell(new StringConverter() {
+                    @Override
+                    public String toString(Object t) {
+                        return t.toString();
+                    }
+
+                    @Override
+                    public Object fromString(String string) {
+                        return string;
+                    }
+                });
+            }
+        };
+        
+        hostColumn.setCellFactory(cellFactoryForMap);
+        addressColumn.setCellFactory(cellFactoryForMap);
+        statusColumn.setCellFactory(cellFactoryForMap);
+        
     }
     
     /** 
@@ -277,9 +351,6 @@ public class FXMLDocumentController implements Initializable {
             
             try {
                 hostTable = statusQuery();
-                if (!checkMap(hostTable))  {
-                    throw new Exception();
-                }
                 imageSet = shoot(hostTable);
             } catch(Exception e) {
                 // TODO: Implement retries, error handling, and rethrowing
@@ -299,13 +370,15 @@ public class FXMLDocumentController implements Initializable {
          *         detected, where the key is the name of the host and the 
          *         value is that host's IP address.
          */
-        private HashMap<String, String> statusQuery() throws Exception {
+        public HashMap<String, String> statusQuery() throws Exception {
             HashMap<String, String> detectedHosts;
             detectedHosts = new HashMap<>();
             
             try {
-                // TODO: Use UDP to scan for hosts and build the detectedHosts 
-                //       table.
+                // TODO: Search for hosts
+                if (!checkMap(detectedHosts))  {
+                    throw new Exception();
+                }
             } catch (Exception e) {
                 // TODO: Implement retries, error handling, and rethrowing
                 throw e;
