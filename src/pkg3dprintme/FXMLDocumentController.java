@@ -32,8 +32,6 @@ import java.io.IOException;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
-import javafx.scene.image.ImageView;
 
 /**
  * The FXMLDocumentController class contains all of the front-end logic of the
@@ -64,21 +62,6 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextField pathTextField;
     
-    @FXML
-    private TableView hostTableView;
-    
-    @FXML
-    private ImageView topLeftImageView;
-    
-    @FXML
-    private ImageView topRightImageView;
-    
-    @FXML
-    private ImageView bottomLeftImageView;
-    
-    @FXML
-    private ImageView bottomRightImageView;
-    
     /* -----------------------------
      * Non-injected class members.
      * -----------------------------
@@ -95,6 +78,19 @@ public class FXMLDocumentController implements Initializable {
      * FXML method injection points.
      * -----------------------------
      */
+
+    /**
+     * TODO: This function needs a JavaDoc comment.
+     * 
+     * @author Yuexian Sun
+     * @author Kieran Hannigan
+     * @param event
+     * @throws IOException 
+     */
+    @FXML
+    private void openDirectoryButtonAction(ActionEvent event) {
+        
+    }
     
     /**
      * The captureButtonAction is an injected method which will be called
@@ -122,53 +118,6 @@ public class FXMLDocumentController implements Initializable {
         } catch (Exception e) {
             // TODO: Display detailed error messages
         }
-    }
-
-    /**
-     * TODO: This function needs a JavaDoc comment.
-     * 
-     * @author Yuexian Sun
-     * @author Kieran Hannigan
-     * @param event
-     */
-    @FXML
-    private void openDirectoryButtonAction(ActionEvent event) {
-        
-    }
-    
-    /**
-     * TODO: This function needs a JavaDoc comment.
-     * 
-     * @author Chaoyan Ye
-     * @author Kieran Hannigan
-     * @param event the internal event which triggers this handler.
-     */
-    @FXML
-    private void refreshTableButtonAction(ActionEvent event) {
-        // TODO: update the table with hosts from the network controller
-    }
-    
-    /**
-     * TODO: This function needs a JavaDoc comment.
-     * 
-     * @author Qiang Shen
-     * @author Kieran Hannigan
-     * @param event the internal event which triggers this handler.
-     */
-    @FXML
-    private void refreshImagesButtonAction(ActionEvent event) {
-        HashMap<String, String> entry = new HashMap<>();
-        
-        try {
-            ArrayList<Image> images = networkController.snap(entry);            
-            topLeftImageView.setImage(images.get(0));
-            topRightImageView.setImage(images.get(1));
-            bottomLeftImageView.setImage(images.get(2));
-            bottomRightImageView.setImage(images.get(3));
-        } catch (Exception e) {
-            // TODO: error handling
-        }
-        
     }
      
     /**
@@ -419,7 +368,7 @@ public class FXMLDocumentController implements Initializable {
          * @param syncTable the table of host delays.
          * @return 
          */
-        public ArrayList<Image> snap(HashMap<String, String> hostTable, 
+        private ArrayList<Image> snap(HashMap<String, String> hostTable, 
                                         HashMap<String, Integer> syncTable) 
                                                             throws Exception {
             ArrayList<Image> receivedImages;
@@ -432,20 +381,6 @@ public class FXMLDocumentController implements Initializable {
                 throw e;
             }
             
-            return receivedImages;
-        }
-
-        private ArrayList<Image> snap(HashMap<String, String> host) {
-            ArrayList<Image> receivedImages;
-            receivedImages = null;
-
-            try {
-                // TODO: Capture images from ImageServers
-            } catch (Exception e) {
-                // TODO: Implement retries, error handling, and rethrowing
-                throw e;
-            }
-
             return receivedImages;
         }
     }
