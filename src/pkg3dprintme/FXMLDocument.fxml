@@ -5,12 +5,12 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -73,12 +73,12 @@
                                              <children>
                                                 <Label text="Name:">
                                                    <HBox.margin>
-                                                      <Insets left="77.0" top="5.0" />
+                                                      <Insets left="70.0" top="5.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <TextField>
+                                                <TextField fx:id="nameTextField">
                                                    <HBox.margin>
-                                                      <Insets left="10.0" />
+                                                      <Insets left="15.0" />
                                                    </HBox.margin>
                                                 </TextField>
                                              </children>
@@ -88,12 +88,12 @@
                                           </HBox>
                                           <HBox prefHeight="0.0" prefWidth="384.0">
                                              <children>
-                                                <Label text="Date:">
+                                                <Label prefHeight="17.0" prefWidth="30.0" text="Date:">
                                                    <HBox.margin>
-                                                      <Insets left="80.0" top="5.0" />
+                                                      <Insets left="76.0" top="5.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <DatePicker>
+                                                <DatePicker fx:id="dateDatePicker">
                                                    <HBox.margin>
                                                       <Insets left="14.0" />
                                                    </HBox.margin>
@@ -107,12 +107,12 @@
                                              <children>
                                                 <Label text="Mobile:">
                                                    <HBox.margin>
-                                                      <Insets left="68.0" top="5.0" />
+                                                      <Insets left="64.0" top="5.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <TextField>
+                                                <TextField fx:id="mobileTextField">
                                                    <HBox.margin>
-                                                      <Insets left="14.0" />
+                                                      <Insets left="16.0" />
                                                    </HBox.margin>
                                                 </TextField>
                                              </children>
@@ -147,7 +147,7 @@
                                                       </HBox>
                                                       <HBox prefHeight="51.0" prefWidth="331.0">
                                                          <children>
-                                                            <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Capture">
+                                                            <Button mnemonicParsing="false" onAction="#captureButtonAction" prefHeight="35.0" prefWidth="100.0" text="Capture">
                                                                <HBox.margin>
                                                                   <Insets left="145.0" />
                                                                </HBox.margin>
@@ -173,39 +173,14 @@
                                     </VBox>
                                     <VBox prefHeight="243.0" prefWidth="238.0">
                                        <children>
-                                          <ScrollPane prefHeight="179.0" prefWidth="193.0">
-                                            <content>
-                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="220.0" prefWidth="174.0">
-                                                   <children>
-                                                      <VBox layoutX="44.0" layoutY="20.0" prefHeight="220.0" prefWidth="190.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <children>
-                                                            <Label text="File Location:">
-                                                               <VBox.margin>
-                                                                  <Insets left="10.0" top="10.0" />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                            <Label text="&quot;C:\Photos\job-date.zip&quot;">
-                                                               <VBox.margin>
-                                                                  <Insets left="40.0" />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                            <Label text="File Location:">
-                                                               <VBox.margin>
-                                                                  <Insets left="10.0" top="10.0" />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                         </children>
-                                                      </VBox>
-                                                   </children>
-                                                </AnchorPane>
-                                            </content>
+                                          <ListView fx:id="logListView" editable="true" prefHeight="192.0" prefWidth="117.0">
                                              <VBox.margin>
-                                                <Insets right="10.0" top="20.0" />
+                                                <Insets right="19.0" top="14.0" />
                                              </VBox.margin>
-                                          </ScrollPane>
-                                          <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Open Directory">
+                                          </ListView>
+                                          <Button mnemonicParsing="false" onAction="#openDirectoryButtonAction" prefHeight="35.0" prefWidth="120.0" text="Open Directory">
                                              <VBox.margin>
-                                                <Insets left="45.0" top="15.0" />
+                                                <Insets left="35.0" top="10.0" />
                                              </VBox.margin>
                                           </Button>
                                        </children>
