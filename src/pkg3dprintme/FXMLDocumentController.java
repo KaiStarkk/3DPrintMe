@@ -16,6 +16,8 @@
  */
 package pkg3dprintme;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -38,6 +40,7 @@ import java.util.Calendar;
 import java.io.FileWriter;  
 import java.io.IOException;
 import static java.lang.Character.LINE_SEPARATOR;
+import static javafx.scene.input.KeyCode.E;
 
 /**
  * The FXMLDocumentController class contains all of the front-end logic of the
@@ -70,6 +73,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Text LogText;
     
+    private int Seria_number=0;
  
     
     /* -----------------------------
@@ -84,10 +88,12 @@ public class FXMLDocumentController implements Initializable {
      */
     @FXML
     private void openDirectoryButtonAction(ActionEvent event) throws IOException{
-        
+        Seria_number += 1;
         String message ;
         String X ;
         String Y ;
+        String M ;
+        String Z;
         LocalDate A;
         Date B;
         Calendar cal = Calendar.getInstance();
@@ -96,11 +102,19 @@ public class FXMLDocumentController implements Initializable {
         A = dateDatePicker.getValue();
         Y = mobileTextField.getText();
         B = cal.getTime();
-       message += "Date And Time Is:  " + B + "\n" + "Name: "  + X + '\n' + "Mobile Number:  " + Y + '\n' + "Birth Day: " + A + '\n'+"\n";
+        Z=Seria_number + "-----\n " + "Date And Time Is:  " + B + "\n" + "Name: "  + X + '\n' + "Mobile Number:  " + Y + '\n' + "Birth Day: " + A + '\n'+"\n";
+       message += Z;
       LogText.textProperty().setValue(message);
-       FileWriter fw = new FileWriter("C:\\demo1.txt",false); 
-         fw.write(message + "\r"); 
+      
+      M = "E:\\3D/" + A + ".txt" ;
+      
+       FileWriter fw = new FileWriter(M,true); 
+         fw.write(Z + "\r"); 
          fw.close();
+         
+         File file = new File("E:\\3D");
+         Desktop.getDesktop().open(file);
+         
     }
     /**
      * 
