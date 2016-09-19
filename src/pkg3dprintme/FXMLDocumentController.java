@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016 Kieran
- *
+ * Copyright (C) 2016
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,11 +16,10 @@
  */
 package pkg3dprintme;
 
+import java.io.FileWriter;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -28,16 +27,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import static javafx.scene.input.KeyCode.Y;
-import javafx.scene.text.Text;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.io.FileWriter;  
 import java.io.IOException;
-import static java.lang.Character.LINE_SEPARATOR;
+import static java.util.Collections.list;
+import java.util.List;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ListView;
 
 /**
  * The FXMLDocumentController class contains all of the front-end logic of the
@@ -54,66 +51,89 @@ public class FXMLDocumentController implements Initializable {
      */
     
     @FXML
-    private Label resultsLabel;    
+    private TextField nameTextField;
     
     @FXML
-   
-    private  TextField nameTextField;
-    
-    @FXML
-    
-   private TextField mobileTextField;
+    private TextField mobileTextField;
     
     @FXML
     private DatePicker dateDatePicker;
     
     @FXML
-    private Text LogText;
+    private ListView logListView;
     
-    private int Serial_number =0 ;
+    @FXML
+    private TextField pathTextField;
+    
     /* -----------------------------
      * Non-injected class members.
      * -----------------------------
      */
-    private NetworkController networkController;
+    
+    private static final String SEP = "--------\n";
+    private static final ObservableList<String> LOG
+            = FXCollections.observableArrayList();
+    
+    private static final NetworkController networkController 
+            = new NetworkController();
     
     /* -----------------------------
      * FXML method injection points.
      * -----------------------------
      */
-    @FXML
-   
-    private void openDirectoryButtonAction(ActionEvent event) throws IOException{
-       Serial_number += 1 ;
-        String message;
-        String X ;
-        String Y ;
-        LocalDate A;
-        Date B;
-        Calendar cal = Calendar.getInstance();
-        
-        message = LogText.textProperty().get();
-        X = nameTextField.getText();
-        A = dateDatePicker.getValue();
-        Y = mobileTextField.getText();
-        B = cal.getTime();
-        
-       message += Serial_number + "----\n " + "Date And Time Is:  " + B + "\n" + "Name: "  + X + '\n' + "Mobile Number:  " + Y + '\n' + "Birth Day: " + A + '\n'+"\n";
-       LogText.textProperty().setValue(message);
-     
-       FileWriter fw = new FileWriter("C:\\Log.txt",false); 
-         fw.write("\r\n" + message + "\r\n" ); 
-         fw.close();
-    }
+
     /**
+     * TODO: This function needs a JavaDoc comment.
      * 
-     * Comments here
+     * @author Yuexian Sun
+     * @author Kieran Hannigan
+     * @param event
+     * @throws IOException 
      */
     @FXML
-    private void exitButtonAction(ActionEvent event) {
+    private void openDirectoryButtonAction(ActionEvent event) {
+        
+    }
+    
+    /**
+     * The captureButtonAction is an injected method which will be called
+     * whenever the capture button on the interface is pressed.
+     * 
+     * @author Kieran Hannigan
+     * @param event the internal event which triggers this handler.
+     */
+    @FXML
+    private void captureButtonAction(ActionEvent event) {
+        nameTextField.setEditable(false);
+        mobileTextField.setEditable(false);
+        dateDatePicker.setEditable(false);
+        
+        LOG.addAll(SEP,
+                   "Name: " + nameTextField.getText(),
+                   "Date: " + dateDatePicker.getValue().toString(),
+                   "Mobile: " + mobileTextField.getText(),
+                   SEP
+                   );
+        try {
+            // FileWriter fw;
+            // fw = new FileWriter(pathTextField.getText(), false);
+            // fw.close();
+        } catch (Exception e) {
+            // TODO: Display detailed error messages
+        }
+    }
      
+    /**
+     * The exitMenuItemAction is an injected method which will be called
+     * whenever the exit menu item on the interface is pressed. This function
+     * calls the JavaFX platform's exit function.
+     * 
+     * @author Kieran Hannigan
+     * @param event the internal event which triggers this handler.
+     */
+    @FXML
+    private void exitMenuItemAction(ActionEvent event) {
         Platform.exit();
-        System.exit(0);
     }
 
     /* ---------------------------
@@ -122,41 +142,66 @@ public class FXMLDocumentController implements Initializable {
      */
     
     /**
-     * The initialize function performs all of the required instantiation.
-     * @param url
+     * The constructor performs all instantiation for the class object that
+     * does not require access to the FXML injected members.
+     * 
+     * @author Kieran Hannigan
+     */
+    public FXMLDocumentController() {
+    }
+    
+    /**
+     * The purpose for the initialize function (by comparison to the 
+     * constructor) is to perform all instantiation that requires access to
+     * FXML injected members - these members are only injected after the
+     * constructor is called. At present there is no instantiation that
+     * requires FXML injected members but the function is still required
+     * because it will be called by the platform.
+     * 
+     * @author Kieran Hannigan
+     * @param url 
      * @param rb 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        networkController = new NetworkController();
-    }    
+        dateDatePicker.setValue(LocalDate.now());
+        logListView.setItems(LOG);
+    }
+    
     /** 
      * The NetworkController class contains all of the back-end logic of the
      * application. An instance of this class is created by the application
      * controller, and that controller will call public methods in this class
-     * as part of handling interface events.
+     * to interface with external resources such as the ImageServers and the
+     * client disk.
      */
     private static class NetworkController {
 
         /**
-         * The constructor for this class, which performs all of the required
-         * instantiation.
+         * The constructor for this class performs all of the required
+         * instantiation. Currently no instantiation is performed, but the
+         * function is still required as it will be called when objects are
+         * instantiated from this class.
+         * 
+         * @author Kieran Hannigan
          */
         public NetworkController() {
         }
         
         /**
          * The capture function captures images from all of the ImageServers
-         * that are available, and them stores them to the file system. 
-         * The parameters to this function are provided by the
-         * interface controller which retrieves them from the layout and
+         * that are available, and then stores them to the file system. 
+         * The parameters to this function are provided by the 
+         * interface controller, which retrieves them from the layout, and
          * performs sanitization before sending them here.
          * 
+         * @author Kieran Hannigan
          * @param name the name of the client/job.
          * @param date the datetime of the job.
          * @param path the path to save the job.
          */
-        public void capture(String name, ZonedDateTime date, String path) throws Exception {
+        public void capture(String name, LocalDate date, String path) 
+                                                            throws Exception {
             ArrayList<Image> images;
             
             try {
@@ -174,6 +219,7 @@ public class FXMLDocumentController implements Initializable {
          * ImageServers. This function is called by the capture function,
          * but can also be called by the interface controller for previewing.
          * 
+         * @author Kieran Hannigan
          * @return an ArrayList of images.
          */
         public ArrayList<Image> getImages() throws Exception {
@@ -196,14 +242,16 @@ public class FXMLDocumentController implements Initializable {
         }
         
         /**
-         * This function queries all available ImageServers using the UDP
-         * protocol broadcast address.
+         * This function queries all available ImageServers for their IP
+         * addresses using a UDP protocol broadcast, then builds a host
+         * table from the results.
          * 
+         * @author Kieran Hannigan
          * @return a map from String to String of all the hosts that were 
          *         detected, where the key is the name of the host and the 
          *         value is that host's IP address.
          */
-        private HashMap<String, String> statusQuery() {
+        private HashMap<String, String> statusQuery() throws Exception {
             HashMap<String, String> detectedHosts;
             detectedHosts = new HashMap<>();
             
@@ -222,11 +270,14 @@ public class FXMLDocumentController implements Initializable {
          * this by iterating through the table and checking each entry
          * individually.
          * 
+         * @author Kieran Hannigan
          * @param hostTable the host table to be checked.
          * @return a boolean representing success (true) or failure (false).
          */
         private boolean checkMap(HashMap<String, String> hostTable) {
-            return (!hostTable.isEmpty() && hostTable.entrySet().stream().noneMatch((entry) -> (!checkEntry(entry))));
+            return (!hostTable.isEmpty() && 
+                    hostTable.entrySet().stream().noneMatch((entry) 
+                            -> (!checkEntry(entry))));
         }
 
         /**
@@ -234,6 +285,7 @@ public class FXMLDocumentController implements Initializable {
          * such things as invalid host names, invalid IP addresses, clashes,
          * and mismatches.
          * 
+         * @author Kieran Hannigan
          * @param entry the host entry to be checked.
          * @return a boolean representing success (true) or failure (false).
          */
@@ -243,14 +295,17 @@ public class FXMLDocumentController implements Initializable {
         }
 
         /**
-         * The shoot function coordinates requests to the ImageServers. It
-         * first builds a table of delay adjustments, then issues a command
+         * The shoot function coordinates requests to the ImageServers by 
+         * first calling the sync function to build a table of delay 
+         * adjustments, and then calling the snap function to issue a command 
          * for the ImageServers to capture.
          * 
+         * @author Kieran Hannigan
          * @param hostTable the table of ImageServers
          * @return the images captured.
          */
-        private ArrayList<Image> shoot(HashMap<String, String> hostTable) {
+        private ArrayList<Image> shoot(HashMap<String, String> hostTable) 
+                                                            throws Exception {
             ArrayList<Image> capturedImages;
             capturedImages = new ArrayList<>();
             
@@ -270,10 +325,12 @@ public class FXMLDocumentController implements Initializable {
         /**
          * The storeImages function saves images to the local file system.
          * 
+         * @author Kieran Hannigan
          * @param imageSet the images to be saved.
          * @param savePath the path where the images should be saved.
          */
-        private void storeImages(ArrayList<Image> imageSet, String savePath) {
+        private void storeImages(ArrayList<Image> imageSet, String savePath) 
+                                                            throws Exception{
             try {
                 // TODO: implement image storing
             } catch (Exception e) {
@@ -284,12 +341,14 @@ public class FXMLDocumentController implements Initializable {
 
         /**
          * The sync function builds up a table of delays based on the time
-         * that it takes to reach a group of hosts.
+         * that it takes to reach each of a group of hosts.
          * 
+         * @author Kiearn Hannigan
          * @param hostTable the hosts to be reached.
          * @return 
          */
-        private HashMap<String, Integer> sync(HashMap<String, String> hostTable) {
+        private HashMap<String, Integer> sync(HashMap<String, String> hostTable)
+                                                            throws Exception {
             HashMap<String, Integer> observedDelays;
             observedDelays = null;
             
@@ -307,12 +366,14 @@ public class FXMLDocumentController implements Initializable {
          * The snap function commands a group of ImageServers to capture and
          * return their payload at a given unified time.
          * 
+         * @author Kieran Hannigan
          * @param syncTable the table of hosts and their addresses.
          * @param syncTable the table of host delays.
          * @return 
          */
         private ArrayList<Image> snap(HashMap<String, String> hostTable, 
-                                        HashMap<String, Integer> syncTable) {
+                                        HashMap<String, Integer> syncTable) 
+                                                            throws Exception {
             ArrayList<Image> receivedImages;
             receivedImages = null;
             
@@ -325,4 +386,5 @@ public class FXMLDocumentController implements Initializable {
             
             return receivedImages;
         }
-    }}
+    }
+}
