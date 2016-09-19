@@ -199,7 +199,7 @@
                                  <children>
                                     <HBox prefHeight="0.0" prefWidth="534.0">
                                        <children>
-                                          <Label text="Connected Host Table">
+                                          <Label text="Host Status Table">
                                              <HBox.margin>
                                                 <Insets left="10.0" top="10.0" />
                                              </HBox.margin>
@@ -219,9 +219,9 @@
                                                    <children>
                                                       <TableView fx:id="hostTableView" prefHeight="158.0" prefWidth="236.0">
                                                         <columns>
-                                                          <TableColumn fx:id="hostColumn" prefWidth="41.0" text="Host" />
-                                                          <TableColumn fx:id="addressColumn" minWidth="7.0" prefWidth="115.0" text="IP Address" />
-                                                            <TableColumn fx:id="statusColumn" prefWidth="79.0" text="Status" />
+                                                          <TableColumn prefWidth="75.0" text="Hostname" />
+                                                          <TableColumn prefWidth="75.0" text="IP Address" />
+                                                            <TableColumn prefWidth="85.0" text="Status" />
                                                         </columns>
                                                       </TableView>
                                                       <Button mnemonicParsing="false" onAction="#refreshTableButtonAction" prefHeight="35.0" prefWidth="100.0" text="Refresh Table">
