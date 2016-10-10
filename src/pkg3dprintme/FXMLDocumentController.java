@@ -16,6 +16,7 @@
  */
 package pkg3dprintme;
 
+import static java.awt.SystemColor.text;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
@@ -31,12 +32,25 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import java.io.IOException;
 import static java.time.Clock.system;
+import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 
 /**
  * The FXMLDocumentController class contains all of the front-end logic of the
@@ -67,6 +81,9 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private TextField pathTextField;
     
+    @FXML
+    private TextField countdownTextField;
+    
     /* -----------------------------
      * Non-injected class members.
      * -----------------------------
@@ -78,6 +95,12 @@ public class FXMLDocumentController implements Initializable {
     
     private static final NetworkController networkController 
             = new NetworkController();
+    private static String Path;
+    
+     private static final Integer STARTTIME = 15;
+    private Timeline timeline;
+    private Label timerLabel = new Label();
+    private Integer timeSeconds = STARTTIME;
     
     /* -----------------------------
      * FXML method injection points.
@@ -105,7 +128,7 @@ public class FXMLDocumentController implements Initializable {
      * @param event the internal event which triggers this handler.
      */
     @FXML
-    private void captureButtonAction(ActionEvent event) {
+    private void captureButtonAction(ActionEvent event) throws IOException {
         nameTextField.setEditable(false);
         mobileTextField.setEditable(false);
         dateDatePicker.setEditable(false);
@@ -116,6 +139,11 @@ public class FXMLDocumentController implements Initializable {
                    "Mobile: " + mobileTextField.getText(),
                    SEP
                    );
+        
+
+        
+        
+        java.awt.Desktop.getDesktop().open(new File(Path));    
         try {
             // FileWriter fw;
             // fw = new FileWriter(pathTextField.getText(), false);
@@ -166,6 +194,8 @@ public class FXMLDocumentController implements Initializable {
         folderChooser = selectedDirectory.getPath().toString();
         
        pathTextField.setText(folderChooser);
+       
+       Path = folderChooser;
     }
         
    
