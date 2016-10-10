@@ -291,12 +291,12 @@
                                     </HBox>
                                     <HBox prefHeight="0.0" prefWidth="534.0">
                                        <children>
-                                          <TextField>
+                                          <TextField fx:id="pathTextField">
                                              <HBox.margin>
                                                 <Insets left="160.0" top="10.0" />
                                              </HBox.margin>
                                           </TextField>
-                                          <Button mnemonicParsing="false" text="Browse">
+                                          <Button mnemonicParsing="false" onAction="#browseButtonAction" text="Browse">
                                              <HBox.margin>
                                                 <Insets left="5.0" top="10.0" />
                                              </HBox.margin>

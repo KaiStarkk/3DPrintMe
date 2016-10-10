@@ -16,6 +16,7 @@
  */
 package pkg3dprintme;
 
+import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,9 +30,13 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import java.io.IOException;
+import static java.time.Clock.system;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * The FXMLDocumentController class contains all of the front-end logic of the
@@ -138,6 +143,32 @@ public class FXMLDocumentController implements Initializable {
      * ---------------------------
      */
     
+    /**
+     * TODO: Write JavaDoc comment for this function
+     * 
+     * @author Yuexian Sun
+     * @param event the internal event which triggers this handler.
+     */
+    @FXML
+    private void browseButtonAction(ActionEvent event) {
+
+        DirectoryChooser chooser = new DirectoryChooser();
+
+        chooser.setTitle("Select a directory.");
+        String folderChooser = "E:\\ ";
+
+        File defaultDirectory = new File( folderChooser );
+
+        chooser.setInitialDirectory(defaultDirectory);
+
+        File selectedDirectory = chooser.showDialog(null);
+
+        folderChooser = selectedDirectory.getPath().toString();
+        
+       pathTextField.setText(folderChooser);
+    }
+        
+   
     /**
      * The constructor performs all instantiation for the class object that
      * does not require access to the FXML injected members.
@@ -383,5 +414,4 @@ public class FXMLDocumentController implements Initializable {
             
             return receivedImages;
         }
-    }
-}
+    }}
