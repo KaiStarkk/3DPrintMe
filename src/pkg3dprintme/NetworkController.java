@@ -16,6 +16,7 @@
  */
 package pkg3dprintme;
 
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -32,6 +33,7 @@ import java.time.LocalDate;
 */
 class NetworkController {
     
+    private static final int MAX_PIS = 10;
     private String SERVER_IP;
     private int UDP_PORT;
     private int TCP_PORT;
@@ -48,11 +50,9 @@ class NetworkController {
      */
     public NetworkController() {
         try {
-            UDP_SOCKET = new DatagramSocket();
             BROADCAST_ADDRESS = InetAddress.getByName("255.255.255.255");
             UDP_PORT = 8888;
             TCP_PORT = 12345;
-            TCP_SOCKET = new ServerSocket(TCP_PORT);
             listening = false;
         } catch (Exception e) {
             // TODO: Implement retries, error handling, and rethrowing
@@ -62,24 +62,17 @@ class NetworkController {
     }
 
     /**
-     * TODO: Write JavaDoc
-     */
-    private void acceptConnections() throws Exception {
-        try {
-            while (listening) {
-                Socket piSocket = TCP_SOCKET.accept();
-                new Thread(new Transfer(piSocket)).start();
-            }
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    /**
-     * TODO: Write JavaDoc
+     * This function announces the client machine's address on UDP broadcast.
+     * The image servers on the network will subsequently try to connect to
+     * the client to provide their connection information and status.
+     * 
+     * @author Siyuan Ji
+     * @author Kieran Hannigan
+     * @throws java.lang.Exception
      */
     private void announceAddress() throws Exception {
         try {
+            UDP_SOCKET = new DatagramSocket();
             SERVER_IP = InetAddress.getLocalHost().getHostAddress();
             byte[] buf = SERVER_IP.getBytes();
             DatagramPacket announcement;
@@ -90,6 +83,89 @@ class NetworkController {
         } catch (Exception e) {
             throw e;
         }
+    }
+    
+    /**
+     * This function accepts connections from the image servers and receives
+     * their connection information and status. This completes the initial
+     * polling/handshake stage of the protocol. From this point forward, the
+     * client is a true client, requesting images from each of the image servers
+     * as required.
+     * 
+     * @author Siyuan Ji
+     * @author Kieran Hannigan
+     * @return a host list containing the respondents' information.
+     * @throws java.lang.Exception
+     */
+    private HostList receiveAddresses() throws Exception {
+        HostList hostList;
+        hostList = new HostList();
+        listening = true;
+        System.out.println("Starting...");
+        new java.util.Timer().schedule( 
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    listening = false;
+                }
+            }, 
+            5000 // timeout
+        );
+        try {
+            while (listening) {
+                TCP_SOCKET = new ServerSocket(TCP_PORT);
+                TCP_SOCKET.setSoTimeout(3000);
+                System.out.println("Scanning...");
+                Socket client = TCP_SOCKET.accept();
+                System.out.println("Reading...");
+                InputStream piInputStream = client.getInputStream();
+                byte[] piInputStreamBuffer = new byte[1024];
+                int piInputStreamBufferLength;
+                piInputStreamBufferLength = piInputStream.read(piInputStreamBuffer);
+                String name = new String(piInputStreamBuffer, 0, 
+                                                  piInputStreamBufferLength);
+                String address = client.getInetAddress().getHostAddress();
+                hostList.add(new Host(name, address, "Connected"));
+                System.out.println(String.format("Received... %s %s", name, address));
+                if(!client.isClosed()) {
+                    client.close();
+                }
+                if(!TCP_SOCKET.isClosed()) {
+                    TCP_SOCKET.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Timeout / Error.");
+            if(!TCP_SOCKET.isClosed()) {
+                    TCP_SOCKET.close();
+            }
+        }
+        if(!TCP_SOCKET.isClosed()) {
+                    TCP_SOCKET.close();
+                }
+        System.out.println("Stopping.");
+        return hostList;
+    }
+
+    /**
+     * This function queries all available ImageServers for their IP
+     * addresses using a UDP protocol broadcast, then builds a host list
+     * from the results.
+     * 
+     * @author Kieran Hannigan
+     * @return a host list containing all of the respondents' information.
+     * @throws java.lang.Exception
+     */
+    public HostList getHosts() throws Exception {
+        HostList hostList;
+        hostList = new HostList();
+        try {
+            announceAddress();
+            hostList = receiveAddresses();
+        } catch (Exception e) {
+            throw e;
+        }
+        return hostList;
     }
 
     /**
@@ -123,7 +199,7 @@ class NetworkController {
      * but can also be called by the interface controller for previewing.
      * 
      * @author Kieran Hannigan
-     * @return an ArrayList of images.
+     * @return an image set containing the images from all of the available image servers.
      * @throws java.lang.Exception
      */
     public ImageSet getImages() throws Exception {
@@ -142,13 +218,14 @@ class NetworkController {
         }
         return imageSet;
     }
-
+    
     /**
      * The storeImages function saves images to the local file system.
      * 
      * @author Kieran Hannigan
      * @param imageSet the images to be saved.
      * @param savePath the path where the images should be saved.
+     * @throws java.lang.Exception
      */
     private void storeImages(ImageSet imageSet, String savePath) 
                                                         throws Exception{
@@ -161,37 +238,15 @@ class NetworkController {
     }
 
     /**
-     * This function queries all available ImageServers for their IP
-     * addresses using a UDP protocol broadcast, then builds a HostList
-     * from the results.
-     * 
-     * @author Kieran Hannigan
-     * @return a map from String to String of all the hosts that were 
-     *         detected, where the key is the name of the host and the 
-     *         value is that host's IP address.
-     * @throws java.lang.Exception
-     */
-    public HostList getHosts() throws Exception {
-        HostList hostList;
-        hostList = new HostList();
-        try {
-            // TODO: Use UDP to scan for hosts and build up hostList.
-        } catch (Exception e) {
-            // TODO: Implement retries, error handling, and rethrowing
-            throw e;
-        }
-        return hostList;
-    }
-
-    /**
      * The shoot function coordinates requests to the ImageServers by 
      * first calling the sync function to build a table of delay 
      * adjustments, and then calling the snap function to issue a command 
      * for the ImageServers to capture.
      * 
      * @author Kieran Hannigan
-     * @param hostTable the table of ImageServers
+     * @param hostList the list of ImageServers
      * @return the images captured.
+     * @throws java.lang.Exception
      */
     private ImageSet shoot(HostList hostList) throws Exception {
         ImageSet imageSet;
@@ -207,14 +262,36 @@ class NetworkController {
 
         return imageSet;
     }
+    
+    /**
+     * The shoot(Host) function captures Images from a single image server.
+     * @param host the image server to poll
+     * @return an image set containing the images from the given image server.
+     * @throws java.lang.Exception
+     */
+    public ImageSet shoot(Host host) throws Exception {
+        ImageSet imageSet;
+        imageSet = new ImageSet();
+        try {
+            if(!host.validate()) {
+                throw new Exception();
+            }
+            imageSet = snap(host);
+        } catch (Exception e) {
+            // TODO: Implement retries, error handling, and rethrowing
+            throw e;
+        }
+        return imageSet;
+    }
 
     /**
      * The sync function builds up a table of delays based on the time
-     * that it takes to reach each of a group of hosts.
+     * that it takes to reach each hosts.
      * 
-     * @author Kiearn Hannigan
+     * @author Kieran Hannigan
      * @param hostTable the hosts to be reached.
-     * @return 
+     * @return a table of hosts and the time delay to each host.
+     * @throws java.lang.Exception
      */
     private SyncTable sync(HostList hostTable) throws Exception {
         SyncTable syncTable = new SyncTable();
@@ -228,16 +305,37 @@ class NetworkController {
     }
 
     /**
-     * The snap function commands a group of ImageServers to capture and
+     * The snap function commands a group of image servers to capture and
      * return their payload at a given unified time.
      * 
      * @author Kieran Hannigan
      * @param syncTable the table of hosts and their addresses.
      * @param syncTable the table of host delays.
-     * @return 
+     * @return an image set containing all of the images.
+     * @throws java.lang.Exception
      */
     private ImageSet snap(HostList hostList, SyncTable syncTable) 
                                                         throws Exception {
+        ImageSet imageSet = new ImageSet();
+        try {
+            // TODO: Capture images from ImageServers
+        } catch (Exception e) {
+            // TODO: Implement retries, error handling, and rethrowing
+            throw e;
+        }
+        return imageSet;
+    }
+    
+    /**
+     * The snap(Host) commands a given image server to capture and deliver
+     * its images.
+     * 
+     * @author Kieran Hannigan
+     * @param host the image server to be polled.
+     * @return an image set containing the images from the given image server.
+     * @throws Exception 
+     */
+    private ImageSet snap(Host host) throws Exception {
         ImageSet imageSet = new ImageSet();
         try {
             // TODO: Capture images from ImageServers

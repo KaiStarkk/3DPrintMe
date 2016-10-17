@@ -214,13 +214,30 @@
                                        <items>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                              <children>
-                                                <TableView layoutX="-50.0" layoutY="-12.0" prefHeight="202.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                  <columns>
-                                                    <TableColumn prefWidth="75.0" text="Hostname" />
-                                                    <TableColumn prefWidth="75.0" text="IP Address" />
-                                                      <TableColumn prefWidth="85.0" text="Status" />
-                                                  </columns>
-                                                </TableView>
+                                                <VBox prefHeight="202.0" prefWidth="236.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <HBox prefHeight="202.0" prefWidth="236.0">
+                                                         <children>
+                                                            <TableView fx:id="hostTable" prefHeight="32.0" prefWidth="330.0">
+                                                              <columns>
+                                                                <TableColumn fx:id="hostnameColumn" prefWidth="75.0" text="Hostname" />
+                                                                <TableColumn fx:id="ipAddressColumn" prefWidth="75.0" text="IP Address" />
+                                                                  <TableColumn fx:id="statusColumn" prefWidth="85.0" text="Status" />
+                                                              </columns>
+                                                            </TableView>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox prefHeight="93.0" prefWidth="236.0">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#refreshHostTableButtonAction" prefHeight="35.0" prefWidth="100.0" text="Refresh">
+                                                               <HBox.margin>
+                                                                  <Insets left="70.0" top="5.0" />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -239,17 +256,17 @@
                                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                               </rowConstraints>
                                                                <children>
-                                                                  <ImageView fitHeight="76.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" />
-                                                                  <ImageView fitHeight="76.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
-                                                                  <ImageView fitHeight="76.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
-                                                                  <ImageView fitHeight="76.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ImageView fx:id="imageViewTopLeft" fitHeight="76.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" />
+                                                                  <ImageView fx:id="imageViewTopRight" fitHeight="76.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+                                                                  <ImageView fx:id="imageViewBottomLeft" fitHeight="76.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
+                                                                  <ImageView fx:id="imageViewBottomRight" fitHeight="76.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                </children>
                                                             </GridPane>
                                                          </children>
                                                       </HBox>
                                                       <HBox prefHeight="83.0" prefWidth="270.0">
                                                          <children>
-                                                            <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Refresh">
+                                                            <Button mnemonicParsing="false" onAction="#refreshImagesButton" prefHeight="35.0" prefWidth="100.0" text="Refresh">
                                                                <HBox.margin>
                                                                   <Insets left="85.0" top="5.0" />
                                                                </HBox.margin>

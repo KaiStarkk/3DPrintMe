@@ -16,10 +16,49 @@
  */
 package pkg3dprintme;
 
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  *
  * @author Kieran
  */
-class Host {
+public class Host {
+    private final SimpleStringProperty name;
+    private final SimpleStringProperty address;
+    private final SimpleStringProperty status;
+
+    public Host(String name, String address, String status) {
+        this.name = new SimpleStringProperty(name);
+        this.address = new SimpleStringProperty(address);
+        this.status = new SimpleStringProperty(status);
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    public String getAddress() {
+        return address.get();
+    }
+
+    public void setAddress(String address) {
+        this.address.set(address);
+    }
+
+    public String getStatus() {
+        return status.get();
+    }
+
+    public void setStatus(String status) {
+        this.status.set(status);
+    }
+    
+    public boolean validate() {
+        return (!this.getName().equals("") && !this.getAddress().equals(""));
+    }
     
 }

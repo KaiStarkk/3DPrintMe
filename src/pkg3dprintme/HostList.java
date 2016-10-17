@@ -16,21 +16,21 @@
  */
 package pkg3dprintme;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  * TODO: Write JavaDoc
  * @author Kieran
  */
-class HostList {
+public class HostList {
     
-    private final HashMap<String, String> hostList;
+    private final ArrayList<Host> hostList;
     
     /**
      * TODO: Write JavaDoc
      */
     public HostList() {
-        hostList = new HashMap<>();
+        hostList = new ArrayList<>();
     }
 
     /**
@@ -42,22 +42,19 @@ class HostList {
      * @return a boolean representing success (true) or failure (false).
      */
     public boolean validate() {
-        return (!hostList.isEmpty() && 
-                hostList.entrySet().stream().noneMatch((entry) 
-                        -> (!checkEntry(entry))));
+        return (!hostList.isEmpty() && hostList.stream().noneMatch((host) -> (!host.validate())));
     }
 
-    /**
-     * This function checks a host entry for errors - errors include
-     * such things as invalid host names, invalid IP addresses, clashes,
-     * and mismatches.
-     * 
-     * @author Kieran Hannigan
-     * @param entry the host entry to be checked.
-     * @return a boolean representing success (true) or failure (false).
-     */
-    private boolean checkEntry(HashMap.Entry<String, String> entry) {
-        // TODO: implement host entry checking
-        return false;
+    public void add(Host host) {
+        hostList.add(host);
     }
+    
+    public Host get(int index) {
+        return hostList.get(index);
+    }
+
+    public ArrayList<Host> getAll() {
+        return hostList;
+    }
+    
 }

@@ -16,10 +16,28 @@
  */
 package pkg3dprintme;
 
+import javafx.scene.image.Image;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  *
  * @author Kieran
  */
-class ImageSet {
+public class ImageSet {
+    
+    private HashMap<String,ArrayList<Image>> imageSet;
+    
+    public ImageSet() {
+        imageSet = new HashMap<>();
+    }
+    
+    public void add(String address, ArrayList<Image> images) {
+        imageSet.put(address, images);
+    }
+
+    public ArrayList<Image> get(String address) {
+        return imageSet.get(address);
+    }
     
 }
