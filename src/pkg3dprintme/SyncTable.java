@@ -16,10 +16,26 @@
  */
 package pkg3dprintme;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Kieran
  */
-class SyncTable {
+public class SyncTable {
+    
+    private final HashMap<Host, Long> syncTable;
+    
+    public SyncTable() {
+        syncTable = new HashMap<>();
+    }
+
+    public void add(Host host, long delay) {
+        syncTable.put(host, delay);
+    }
+    
+    public Long get(Host host) {
+        return syncTable.get(host);
+    }
     
 }

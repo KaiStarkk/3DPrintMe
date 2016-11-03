@@ -26,7 +26,7 @@ import java.util.HashMap;
  */
 public class ImageSet {
     
-    private HashMap<String,ArrayList<Image>> imageSet;
+    private final HashMap<String,ArrayList<Image>> imageSet;
     
     public ImageSet() {
         imageSet = new HashMap<>();

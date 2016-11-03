@@ -16,13 +16,17 @@
  */
 package pkg3dprintme;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /** 
 * The NetworkController class contains all of the back-end logic of the
@@ -34,6 +38,7 @@ import java.time.LocalDate;
 class NetworkController {
     
     private static final int MAX_PIS = 10;
+    private static final int COUNTDOWN = 3000;
     private String SERVER_IP;
     private int UDP_PORT;
     private int TCP_PORT;
@@ -295,10 +300,33 @@ class NetworkController {
      */
     private SyncTable sync(HostList hostTable) throws Exception {
         SyncTable syncTable = new SyncTable();
+        Socket socket = new Socket();
+        long current;
+        long delay;
         try {
-            // TODO: Build sync table using custom TCP handshake
+            ArrayList<Host> hosts = hostTable.getAll();
+            for (Host host : hosts) {
+                socket = new Socket(host.getAddress(), TCP_PORT);
+                socket.setSoTimeout(3000);
+                OutputStream os = socket.getOutputStream();
+                InputStream is = socket.getInputStream();
+                delay = 0;
+                current = System.nanoTime();
+                os.write("ping".getBytes());
+                if (is.available() != 0) {
+                    delay = (System.nanoTime() - current)/2;
+                }
+                syncTable.add(host, delay);
+                is.close();
+                if (!socket.isClosed()) {
+                    socket.close();
+                }
+            }
         } catch (Exception e) {
             // TODO: Implement retries, error handling, and rethrowing
+            if (!socket.isClosed()) {
+                socket.close();
+            }
             throw e;
         }
         return syncTable;
@@ -318,7 +346,14 @@ class NetworkController {
                                                         throws Exception {
         ImageSet imageSet = new ImageSet();
         try {
-            // TODO: Capture images from ImageServers
+            long current = System.nanoTime();
+            for (Host host : hostList.getAll()) {
+                long captureOffset = COUNTDOWN - syncTable.get(host) - (System.nanoTime() - current);
+                /*
+                send("capture", captureOffset);
+                */
+            }
+            // receive images
         } catch (Exception e) {
             // TODO: Implement retries, error handling, and rethrowing
             throw e;
@@ -346,3 +381,13 @@ class NetworkController {
         return imageSet;
     }
 }
+
+/* Pi capture pseudocode
+receive("capture", captureOffset);
+
+current = System.nanoTime();
+while((System.nanoTime - current) < captureOffset) {
+    // do nothing
+}
+capture();
+*/

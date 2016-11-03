@@ -113,9 +113,7 @@ public class FXMLDocumentController implements Initializable {
         try {
             java.awt.Desktop.getDesktop().open(new File(pathTextField.getText()));
         } catch (Exception e) {
-            LOG.addAll(SEP,
-                    "Error: Attempting to open image directory failed. Please confirm that the correct directory has been set in the settings menu.",
-                    SEP);
+            LOG.addAll("Error: Attempting to open image directory failed. Please confirm that the correct directory has been set in the settings menu.", SEP);
         }
     }
     
@@ -207,7 +205,7 @@ public class FXMLDocumentController implements Initializable {
         } catch(Exception e) {
             LOG.addAll("Error: Image preview failed. Please ensure that the selected ImageServer is still connected and available.", SEP);
         }
-        // System.out.println(hostTable.getSelectionModel().getSelectedItem().getAddress());
+        System.out.println(hostTable.getSelectionModel().getSelectedItem().getAddress());
     }
      
     /**

@@ -19,7 +19,7 @@ package pkg3dprintme;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- *
+ * 
  * @author Kieran
  */
 public class Host {
